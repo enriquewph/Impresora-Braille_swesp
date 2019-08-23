@@ -4,8 +4,7 @@
 #define ENCODER_B 32
 
 ESP32Encoder encoder;
-
-
+ 
 void setup()
 {
     // put your setup code here, to run once:
