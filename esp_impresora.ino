@@ -3,6 +3,9 @@
 #define ENCODER_A 33
 #define ENCODER_B 32
 
+//lucas es un capo
+
+
 ESP32Encoder encoder;
  
 void setup()
