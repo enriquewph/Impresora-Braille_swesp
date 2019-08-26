@@ -1,8 +1,9 @@
 #include <PID_v1.h>
 
 #include "header.h"
+
 #include <ESP32Encoder.h>
-#include <math.h>       /* round, floor, ceil, trunc */
+#include <math.h> /* round, floor, ceil, trunc */
 
 #define ENCODER_A 33
 #define ENCODER_B 32
@@ -13,7 +14,6 @@
 
 #define MOTOR_PWM_FREQ 250
 #define MOTOR_PWM_RESOLUCION 8
-
 
 ESP32Encoder encoder;
 
@@ -29,15 +29,14 @@ D_Param: the bigger the number  the more the controller dampens oscillations (to
 double EJEX_KP = 0.150;
 double EJEX_KI = 0.100;
 double EJEX_KD = 0.000;
+double aggKp = 4;
+double aggKi = 0.2;
+double aggKd = 1;
 
 #define MOTOR_PWM_TOPEBAJO 100
 #define MOTOR_PWM_TOPEALTO 255
 
-//Dividir entrada del encoder para perder precision.
-
 PID myPID(&EJEX_POSICION_ENCODER_ACTUAL, &EJEX_PID_OUTPUT, &EJEX_POSICION_ENCODER_SETPOINT, EJEX_KP, EJEX_KI, EJEX_KD, REVERSE);
-
-
 
 uint32_t lastMillis;
 
@@ -67,8 +66,7 @@ void loop()
         Serial.println("OUT: " + String(EJEX_PID_OUTPUT));
         lastMillis = millis();
     }
-    // put your main code here, to run repeatedly:
-    //Serial.println("Encoder count = " + String((int32_t)encoder.getCount()));
+
     if (Serial.available())
     {
         String input = Serial.readStringUntil('\n');
@@ -92,6 +90,17 @@ void EJEX_PID_INICIAR()
 void EJEX_PID_COMPUTAR()
 {
     EJEX_POSICION_ENCODER_ACTUAL = encoder.getCount();
+    double gap = abs(EJEX_POSICION_ENCODER_SETPOINT - EJEX_POSICION_ENCODER_ACTUAL); //distance away from setpoint
+    if (gap < 10)
+    { //we're close to setpoint, use conservative tuning parameters
+        myPID.SetTunings(EJEX_KP, EJEX_KI, EJEX_KD);
+    }
+    else
+    {
+        //we're far from setpoint, use aggressive tuning parameters
+        myPID.SetTunings(aggKp, aggKi, aggKd);
+    }
+
     myPID.Compute();
     //hacer algo con la salida
 
@@ -109,6 +118,7 @@ void EJEX_PID_COMPUTAR()
     //ledcWrite(MOTOR_A_PWM, input.toInt());
 
     //Sacarle el decimal a la salida:
+
     int sindecimal = EJEX_PID_OUTPUT;
     EJEX_PID_OUTPUT = sindecimal;
 
@@ -129,7 +139,6 @@ void EJEX_PID_COMPUTAR()
         ledcWrite(MOTOR_B_PWM, 0);
         ledcWrite(MOTOR_B_PWM, 0);
     }
-
 }
 
 int myMap(double x, double in_min, double in_max, double out_min, double out_max)
