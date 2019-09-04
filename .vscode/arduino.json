@@ -4,5 +4,5 @@
     "configuration": "PSRAM=enabled,PartitionScheme=default,CPUFreq=240,FlashMode=qio,FlashFreq=80,FlashSize=4M,UploadSpeed=921600,DebugLevel=none",
     "programmer": "AVRISP mkII",
     "output": "../ard_builds",
-    "port": "COM11"
+    "port": "COM5"
 }
