@@ -1,7 +1,7 @@
 #include <ESP32Encoder.h>
 
 #include <PID_v1.h>
-#include "header.h"
+
 
 #include <math.h> /* round, floor, ceil, trunc */
 
@@ -36,7 +36,7 @@ double AGG_Kd = 1;
 #define MOTOR_PWM_TOPEBAJO 100
 #define MOTOR_PWM_TOPEALTO 255
 
-PID myPID(&EJEX_POSICION_ENCODER_ACTUAL, &EJEX_PID_OUTPUT, &EJEX_POSICION_ENCODER_SETPOINT, CONS_KP, CONS_KI, CONS_KD, REVERSE);
+PID myPID(&EJEX_POSICION_ENCODER_ACTUAL, &EJEX_PID_OUTPUT, &EJEX_POSICION_ENCODER_SETPOINT, AGG_Kp, AGG_Ki, AGG_Kd, REVERSE);
 
 uint32_t lastMillis;
 
@@ -54,12 +54,12 @@ void setup()
     EJEX_PONERACERO();
     EJEX_PID_INICIAR();
     lastMillis = millis();
-    EJEX_POSICION_ENCODER_SETPOINT = 2000;
+    EJEX_POSICION_ENCODER_SETPOINT = 3000;
 }
 
 void loop()
 {
-    if (millis() >= lastMillis + 250U)
+    if (millis() >= lastMillis + 400U)
     {
         Serial.println("ACT: " + String(EJEX_POSICION_ENCODER_ACTUAL));
         Serial.println("SET: " + String(EJEX_POSICION_ENCODER_SETPOINT));
@@ -101,6 +101,7 @@ void EJEX_PID_COMPUTAR()
         myPID.SetTunings(AGG_Kp, AGG_Ki, AGG_Kd);
 
     }
+    
     myPID.Compute();
     //hacer algo con la salida
 
@@ -124,8 +125,12 @@ void EJEX_PID_COMPUTAR()
 
     if (EJEX_PID_OUTPUT > 50) //Se paso para la izquierda
     {
-        ledcWrite(MOTOR_A_PWM, 0);
         ledcWrite(MOTOR_B_PWM, myMap(EJEX_PID_OUTPUT, 50, 100, MOTOR_PWM_TOPEBAJO, MOTOR_PWM_TOPEALTO));
+        ledcWrite(MOTOR_A_PWM, 0);
+       
+       Serial.println("bajo: " + String(EJEX_PID_OUTPUT));
+        Serial.println("alto: " + String(MOTOR_PWM_TOPEALTO));
+        Serial.println("SE PASO");
     }
 
     if (EJEX_PID_OUTPUT < 50) //Se paso para la derecha
@@ -151,6 +156,12 @@ void EJEX_PONERACERO()
     //ir a 0.
     digitalWrite(MOTOR_A, LOW);
     digitalWrite(MOTOR_B, HIGH);
+    delay(3500);
+    digitalWrite(MOTOR_A, LOW);
+    digitalWrite(MOTOR_B, LOW);
+     delay(3500);
+    digitalWrite(MOTOR_A, HIGH);
+    digitalWrite(MOTOR_B, LOW);
     delay(3500);
     digitalWrite(MOTOR_A, LOW);
     digitalWrite(MOTOR_B, LOW);
