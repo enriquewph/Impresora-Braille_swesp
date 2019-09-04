@@ -1,8 +1,8 @@
-#include <PID_v1.h>
+#include <ESP32Encoder.h>
 
+#include <PID_v1.h>
 #include "header.h"
 
-#include <ESP32Encoder.h>
 #include <math.h> /* round, floor, ceil, trunc */
 
 #define ENCODER_A 33
@@ -26,17 +26,17 @@ P_Param:  the bigger the number the harder the controller pushes.
 I_Param:  the SMALLER the number (except for 0, which turns it off,)  the more quickly the controller reacts to load changes, but the greater the risk of oscillations.
 D_Param: the bigger the number  the more the controller dampens oscillations (to the point where performance can be hindered)
 */
-double EJEX_KP = 0.150;
-double EJEX_KI = 0.100;
-double EJEX_KD = 0.000;
-double aggKp = 4;
-double aggKi = 0.2;
-double aggKd = 1;
+double CONS_KP = 0.150;
+double CONS_KI = 0.100;
+double CONS_KD = 0.000;
+double AGG_Kp = 4;
+double AGG_Ki = 0.2;
+double AGG_Kd = 1;
 
 #define MOTOR_PWM_TOPEBAJO 100
 #define MOTOR_PWM_TOPEALTO 255
 
-PID myPID(&EJEX_POSICION_ENCODER_ACTUAL, &EJEX_PID_OUTPUT, &EJEX_POSICION_ENCODER_SETPOINT, EJEX_KP, EJEX_KI, EJEX_KD, REVERSE);
+ myPID(&EJEX_POSICION_ENCODER_ACTUAL, &EJEX_PID_OUTPUT, &EJEX_POSICION_ENCODER_SETPOINT, CONS_KP, CONS_KI, CONS_KD, REVERSE);
 
 uint32_t lastMillis;
 
@@ -93,14 +93,14 @@ void EJEX_PID_COMPUTAR()
     double gap = abs(EJEX_POSICION_ENCODER_SETPOINT - EJEX_POSICION_ENCODER_ACTUAL); //distance away from setpoint
     if (gap < 10)
     { //we're close to setpoint, use conservative tuning parameters
-        myPID.SetTunings(EJEX_KP, EJEX_KI, EJEX_KD);
+        myPID.SetTunings(CONS_KP, CONS_KI, CONS_KD);
     }
     else
     {
         //we're far from setpoint, use aggressive tuning parameters
-        myPID.SetTunings(aggKp, aggKi, aggKd);
-    }
+        myPID.SetTunings(AGG_Kp, AGG_Ki, AGG_Kd);
 
+    }
     myPID.Compute();
     //hacer algo con la salida
 

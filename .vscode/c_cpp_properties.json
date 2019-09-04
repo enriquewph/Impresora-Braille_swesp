@@ -3,6 +3,8 @@
         {
             "name": "Win32",
             "includePath": [
+                "C:\\Users\\Lucas\\Documents\\Arduino\\libraries\\PID",
+                "C:\\Users\\Lucas\\Documents\\Arduino\\libraries\\ESP32Encoder\\src",
                 "E:\\Dropbox\\Datos de Programas\\Arduino\\libraries\\PID",
                 "C:\\Users\\Lucas\\AppData\\Local\\Arduino15\\packages\\esp32\\tools\\**",
                 "C:\\Users\\Lucas\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.2\\**",
