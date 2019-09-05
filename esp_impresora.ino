@@ -2,7 +2,6 @@
 
 #include <PID_v1.h>
 
-
 #include <math.h> /* round, floor, ceil, trunc */
 
 #define ENCODER_A 33
@@ -24,19 +23,16 @@ double EJEX_PID_OUTPUT; //pwm en una direccion u otra (-255 a 0 a +255)
 Parameters and what they do (sort of)
 P_Param:  the bigger the number the harder the controller pushes.
 I_Param:  the SMALLER the number (except for 0, which turns it off,)  the more quickly the controller reacts to load changes, but the greater the risk of oscillations.
-D_Param: the bigger the number  the more the controller dampens oscillations (to the point where performance can be hindered)
+D_Param: the bigger the number  the more the controllr dampens oscillations (to the point where performance can be hindered)
 */
-double CONS_KP = 0.150;
-double CONS_KI = 0.100;
-double CONS_KD = 0.000;
-double AGG_Kp = 4;
-double AGG_Ki = 0.2;
-double AGG_Kd = 1;
+double CONS_KP = 0.2;
+double CONS_KI = 0.4;
+double CONS_KD = 0;
 
 #define MOTOR_PWM_TOPEBAJO 100
 #define MOTOR_PWM_TOPEALTO 255
 
-PID myPID(&EJEX_POSICION_ENCODER_ACTUAL, &EJEX_PID_OUTPUT, &EJEX_POSICION_ENCODER_SETPOINT, AGG_Kp, AGG_Ki, AGG_Kd, REVERSE);
+PID myPID(&EJEX_POSICION_ENCODER_ACTUAL, &EJEX_PID_OUTPUT, &EJEX_POSICION_ENCODER_SETPOINT, CONS_KP, CONS_KI, CONS_KD, REVERSE);
 
 uint32_t lastMillis;
 
@@ -50,11 +46,11 @@ void setup()
     // Attache pins for use as encoder pins
     encoder.attachHalfQuad(ENCODER_A, ENCODER_B);
     Serial.begin(115200);
-
+    EJEX_POSICION_ENCODER_SETPOINT = 0;
     EJEX_PONERACERO();
     EJEX_PID_INICIAR();
+
     lastMillis = millis();
-    EJEX_POSICION_ENCODER_SETPOINT = 3000;
 }
 
 void loop()
@@ -84,25 +80,13 @@ void EJEX_PID_INICIAR()
     ledcSetup(MOTOR_B_PWM, MOTOR_PWM_FREQ, MOTOR_PWM_RESOLUCION);
 
     myPID.SetMode(AUTOMATIC);
-    myPID.SetOutputLimits(0, 100);
+    myPID.SetOutputLimits(0, 50);
 }
 
 void EJEX_PID_COMPUTAR()
 {
-    EJEX_POSICION_ENCODER_ACTUAL = encoder.getCount();
-    double gap = abs(EJEX_POSICION_ENCODER_SETPOINT - EJEX_POSICION_ENCODER_ACTUAL); //distance away from setpoint
-    if (gap < 10)
-    { //we're close to setpoint, use conservative tuning parameters
-        myPID.SetTunings(CONS_KP, CONS_KI, CONS_KD);
-    }
-    else
-    {
-        //we're far from setpoint, use aggressive tuning parameters
-        myPID.SetTunings(AGG_Kp, AGG_Ki, AGG_Kd);
-
-    }
-    
     myPID.Compute();
+    EJEX_POSICION_ENCODER_ACTUAL = encoder.getCount();
     //hacer algo con la salida
 
     /*
@@ -123,23 +107,19 @@ void EJEX_PID_COMPUTAR()
     int sindecimal = EJEX_PID_OUTPUT;
     EJEX_PID_OUTPUT = sindecimal;
 
-    if (EJEX_PID_OUTPUT > 50) //Se paso para la izquierda
+    if (EJEX_PID_OUTPUT > 25) //Se paso para la izquierda
     {
-        ledcWrite(MOTOR_B_PWM, myMap(EJEX_PID_OUTPUT, 50, 100, MOTOR_PWM_TOPEBAJO, MOTOR_PWM_TOPEALTO));
+        ledcWrite(MOTOR_B_PWM, myMap(EJEX_PID_OUTPUT, 25, 50, MOTOR_PWM_TOPEBAJO, MOTOR_PWM_TOPEALTO));
         ledcWrite(MOTOR_A_PWM, 0);
-       
-       Serial.println("bajo: " + String(EJEX_PID_OUTPUT));
-        Serial.println("alto: " + String(MOTOR_PWM_TOPEALTO));
-        Serial.println("SE PASO");
     }
 
-    if (EJEX_PID_OUTPUT < 50) //Se paso para la derecha
+    if (EJEX_PID_OUTPUT < 25) //Se paso para la derecha
     {
-        ledcWrite(MOTOR_A_PWM, myMap(EJEX_PID_OUTPUT, 50, 0, MOTOR_PWM_TOPEBAJO, MOTOR_PWM_TOPEALTO));
+        ledcWrite(MOTOR_A_PWM, myMap(EJEX_PID_OUTPUT, 25, 0, MOTOR_PWM_TOPEBAJO, MOTOR_PWM_TOPEALTO));
         ledcWrite(MOTOR_B_PWM, 0);
     }
 
-    if (EJEX_PID_OUTPUT > 49 || EJEX_PID_OUTPUT < 51) //No hacer nada.
+    if (EJEX_PID_OUTPUT == 25) //No hacer nada.
     {
         ledcWrite(MOTOR_B_PWM, 0);
         ledcWrite(MOTOR_B_PWM, 0);
@@ -154,17 +134,13 @@ int myMap(double x, double in_min, double in_max, double out_min, double out_max
 void EJEX_PONERACERO()
 {
     //ir a 0.
+
     digitalWrite(MOTOR_A, LOW);
     digitalWrite(MOTOR_B, HIGH);
-    delay(3500);
-    digitalWrite(MOTOR_A, LOW);
-    digitalWrite(MOTOR_B, LOW);
-     delay(3500);
-    digitalWrite(MOTOR_A, HIGH);
-    digitalWrite(MOTOR_B, LOW);
     delay(3500);
     digitalWrite(MOTOR_A, LOW);
     digitalWrite(MOTOR_B, LOW);
     encoder.setCount(0);
     EJEX_POSICION_ENCODER_ACTUAL = 0;
 }
+
