@@ -1,8 +1,9 @@
+
 #include <ESP32Encoder.h>
 
 #include <PID_v1.h>
 
-#include <math.h> /* round, floor, ceil, trunc */
+#include <math.h> // round, floor, ceil, trunc 
 
 #define ENCODER_A 33
 #define ENCODER_B 32
@@ -25,13 +26,13 @@ P_Param:  the bigger the number the harder the controller pushes.
 I_Param:  the SMALLER the number (except for 0, which turns it off,)  the more quickly the controller reacts to load changes, but the greater the risk of oscillations.
 D_Param: the bigger the number  the more the controllr dampens oscillations (to the point where performance can be hindered)
 */
-double CONS_KP = 0.12;
-double CONS_KI = 0.33;
-double CONS_KD = 0;
+double CONS_KP = 1;
+double CONS_KI = 0;
+double CONS_KD = 0.2;
 
 uint16_t input_serial = 0;
 
-#define MOTOR_PWM_TOPEBAJO 100
+#define MOTOR_PWM_TOPEBAJO 120
 #define MOTOR_PWM_TOPEALTO 255
 
 PID myPID(&EJEX_POSICION_ENCODER_ACTUAL, &EJEX_PID_OUTPUT, &EJEX_POSICION_ENCODER_SETPOINT, CONS_KP, CONS_KI, CONS_KD, REVERSE);
@@ -84,7 +85,7 @@ void EJEX_PID_INICIAR()
     ledcSetup(MOTOR_B_PWM, MOTOR_PWM_FREQ, MOTOR_PWM_RESOLUCION);
 
     myPID.SetMode(AUTOMATIC);
-    myPID.SetOutputLimits(0, 50);
+    myPID.SetOutputLimits(0, 100);
 }
 
 void EJEX_PID_COMPUTAR()
@@ -111,19 +112,19 @@ void EJEX_PID_COMPUTAR()
     int sindecimal = EJEX_PID_OUTPUT;
     EJEX_PID_OUTPUT = sindecimal;
 
-    if (EJEX_PID_OUTPUT > 25) //Se paso para la izquierda
+    if (EJEX_PID_OUTPUT > 50) //Se paso para la izquierda
     {
-        ledcWrite(MOTOR_B_PWM, myMap(EJEX_PID_OUTPUT, 25, 50, MOTOR_PWM_TOPEBAJO, MOTOR_PWM_TOPEALTO));
+        ledcWrite(MOTOR_B_PWM, myMap(EJEX_PID_OUTPUT, 50, 100, MOTOR_PWM_TOPEBAJO, MOTOR_PWM_TOPEALTO));
         ledcWrite(MOTOR_A_PWM, 0);
     }
 
-    if (EJEX_PID_OUTPUT < 25) //Se paso para la derecha
+    if (EJEX_PID_OUTPUT < 50) //Se paso para la derecha
     {
-        ledcWrite(MOTOR_A_PWM, myMap(EJEX_PID_OUTPUT, 25, 0, MOTOR_PWM_TOPEBAJO, MOTOR_PWM_TOPEALTO));
+        ledcWrite(MOTOR_A_PWM, myMap(EJEX_PID_OUTPUT, 50, 0, MOTOR_PWM_TOPEBAJO, MOTOR_PWM_TOPEALTO));
         ledcWrite(MOTOR_B_PWM, 0);
     }
 
-    if (EJEX_PID_OUTPUT == 25) //No hacer nada.
+    if (EJEX_PID_OUTPUT == 50) //No hacer nada.
     {
         ledcWrite(MOTOR_B_PWM, 0);
         ledcWrite(MOTOR_B_PWM, 0);
@@ -147,4 +148,3 @@ void EJEX_PONERACERO()
     encoder.setCount(0);
     EJEX_POSICION_ENCODER_ACTUAL = 0;
 }
-
