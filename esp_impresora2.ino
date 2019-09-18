@@ -26,13 +26,13 @@ P_Param:  the bigger the number the harder the controller pushes.
 I_Param:  the SMALLER the number (except for 0, which turns it off,)  the more quickly the controller reacts to load changes, but the greater the risk of oscillations.
 D_Param: the bigger the number  the more the controllr dampens oscillations (to the point where performance can be hindered)
 */
-double CONS_KP = 1;
-double CONS_KI = 0;
-double CONS_KD = 0.2;
+double CONS_KP = 0.43;
+double CONS_KI = 0.4;
+double CONS_KD = 0;
 
 uint16_t input_serial = 0;
 
-#define MOTOR_PWM_TOPEBAJO 120
+#define MOTOR_PWM_TOPEBAJO 125
 #define MOTOR_PWM_TOPEALTO 255
 
 PID myPID(&EJEX_POSICION_ENCODER_ACTUAL, &EJEX_PID_OUTPUT, &EJEX_POSICION_ENCODER_SETPOINT, CONS_KP, CONS_KI, CONS_KD, REVERSE);
