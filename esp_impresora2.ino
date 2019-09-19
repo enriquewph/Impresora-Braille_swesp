@@ -15,6 +15,8 @@
 #define MOTOR_PWM_FREQ 250
 #define MOTOR_PWM_RESOLUCION 8
 
+#define solenoide 13
+
 ESP32Encoder encoder;
 
 double EJEX_POSICION_ENCODER_SETPOINT = 0;
@@ -26,14 +28,15 @@ P_Param:  the bigger the number the harder the controller pushes.
 I_Param:  the SMALLER the number (except for 0, which turns it off,)  the more quickly the controller reacts to load changes, but the greater the risk of oscillations.
 D_Param: the bigger the number  the more the controllr dampens oscillations (to the point where performance can be hindered)
 */
-double CONS_KP = 0.43;
-double CONS_KI = 0.4;
+double CONS_KP = 0.3;
+double CONS_KI = 1;
 double CONS_KD = 0;
+
 
 uint16_t input_serial = 0;
 
 #define MOTOR_PWM_TOPEBAJO 125
-#define MOTOR_PWM_TOPEALTO 255
+#define MOTOR_PWM_TOPEALTO 235
 
 PID myPID(&EJEX_POSICION_ENCODER_ACTUAL, &EJEX_PID_OUTPUT, &EJEX_POSICION_ENCODER_SETPOINT, CONS_KP, CONS_KI, CONS_KD, REVERSE);
 
@@ -45,6 +48,7 @@ void setup()
     pinMode(2, OUTPUT);
     pinMode(MOTOR_A, OUTPUT);
     pinMode(MOTOR_B, OUTPUT);
+    pinMode(solenoide, OUTPUT);
 
     // Attache pins for use as encoder pins
     encoder.attachHalfQuad(ENCODER_A, ENCODER_B);
@@ -58,20 +62,35 @@ void setup()
 
 void loop()
 {
-    if (millis() >= lastMillis + 400U)
+
+      
+    if (millis() >= lastMillis + 500u)
     {
         Serial.println("ACT: " + String(EJEX_POSICION_ENCODER_ACTUAL));
         Serial.println("SET: " + String(EJEX_POSICION_ENCODER_SETPOINT));
         Serial.println("OUT: " + String(EJEX_PID_OUTPUT));
         lastMillis = millis();
+        if (EJEX_POSICION_ENCODER_ACTUAL<4000)
+        {
+            EJEX_POSICION_ENCODER_SETPOINT = EJEX_POSICION_ENCODER_SETPOINT+20;
+        }
+        else
+        {
+            EJEX_POSICION_ENCODER_SETPOINT = 0;
+        }
+        
+       
     }
+   
+    digitalWrite(solenoide,LOW);
 
     if (Serial.available())
     {
         String input = Serial.readStringUntil('\n');
         EJEX_POSICION_ENCODER_SETPOINT = input.toInt();
     }
-
+    
+    
     EJEX_PID_COMPUTAR();
 
 
