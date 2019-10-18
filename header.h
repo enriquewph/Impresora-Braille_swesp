@@ -1,5 +1,3 @@
-
-
 #include <ESP32Encoder.h>
 
 #define ENCODER_A 32
@@ -29,6 +27,12 @@
 #define MOTOR_PWM_3 195
 #define MOTOR_PWM_4 225
 
-double EJEX_POSICION_ENCODER_SETPOINT = 0;
-double EJEX_POSICION_ENCODER_ACTUAL;
-uint16_t resta;
+#define MARGEN_IZQ 1
+#define MARGEN_DER 2
+#define ESPA_LETRA 3
+#define ESPA_LyL 4
+
+#define DISTANCIA_MARGEN_IZQ 550
+#define DISTANCIA_MARGEN_DER 550
+#define DISTANCIA_LETRA 50
+#define DISTANCIA_LyL 75
