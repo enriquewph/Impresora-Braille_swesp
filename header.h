@@ -2,10 +2,6 @@
 
 #include <ESP32Encoder.h>
 
-#include <PID_v1.h>
-
-#include <math.h> // round, floor, ceil, trunc 
-
 #define ENCODER_A 32
 #define ENCODER_B 33
 #define MOTOR_A 27
@@ -32,3 +28,7 @@
 #define MOTOR_PWM_2 180
 #define MOTOR_PWM_3 195
 #define MOTOR_PWM_4 225
+
+double EJEX_POSICION_ENCODER_SETPOINT = 0;
+double EJEX_POSICION_ENCODER_ACTUAL;
+uint16_t resta;

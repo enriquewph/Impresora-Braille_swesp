@@ -1,24 +1,11 @@
-
-
 #include <ESP32Encoder.h>
-
-#include <PID_v1.h>
-
-#include <math.h> // round, floor, ceil, trunc
-
 #include "header.h"
 
 ESP32Encoder encoder;
-
-double EJEX_POSICION_ENCODER_SETPOINT = 0;
-double EJEX_POSICION_ENCODER_ACTUAL;
-uint16_t resta;
-
 uint32_t lastMillis;
 
 void setup()
 {
-    // put your setup code here, to run once:
     pinMode(2, OUTPUT);
     pinMode(MOTOR_A, OUTPUT);
     pinMode(MOTOR_B, OUTPUT);
@@ -26,7 +13,6 @@ void setup()
     // Attache pins for use as encoder pins
     encoder.attachHalfQuad(ENCODER_A, ENCODER_B);
     Serial.begin(115200);
-    EJEX_POSICION_ENCODER_SETPOINT = 0;
     EJEX_PONERACERO();
 
     lastMillis = millis();
@@ -35,7 +21,7 @@ void setup()
     ledcAttachPin(MOTOR_B, MOTOR_B_PWM);
     ledcSetup(MOTOR_A_PWM, MOTOR_PWM_FREQ, MOTOR_PWM_RESOLUCION);
     ledcSetup(MOTOR_B_PWM, MOTOR_PWM_FREQ, MOTOR_PWM_RESOLUCION);
-    EJEX_POSICION_ENCODER_SETPOINT=450;
+    EJEX_POSICION_ENCODER_SETPOINT = 450;
 }
 
 void loop()
@@ -48,11 +34,10 @@ void loop()
         Serial.println("SET: " + String(EJEX_POSICION_ENCODER_SETPOINT));
         Serial.println("RESTA: " + String(resta));
         //EJEX_POSICION_ENCODER_SETPOINT=EJEX_POSICION_ENCODER_SETPOINT+50;
-        
     }
-    if(EJEX_POSICION_ENCODER_SETPOINT>=3650)
+    if (EJEX_POSICION_ENCODER_SETPOINT >= 3650)
     {
-        EJEX_POSICION_ENCODER_SETPOINT=450;
+        EJEX_POSICION_ENCODER_SETPOINT = 450;
     }
 
     if (Serial.available())
