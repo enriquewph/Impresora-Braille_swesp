@@ -36,3 +36,9 @@
 #define DISTANCIA_MARGEN_DER 550
 #define DISTANCIA_LETRA 25
 #define DISTANCIA_LyL 50
+
+#define MOTOR_STEPS 32
+#define RPM 500
+#define MICROSTEPS 1
+#define DIR 8
+#define STEP 13

@@ -5,7 +5,7 @@ uint32_t lastMillis;
 
 void setup()
 {
-    pinMode(2, OUTPUT);
+    pinMode(SOLENOIDE, OUTPUT);
     pinMode(MOTOR_A, OUTPUT);
     pinMode(MOTOR_B, OUTPUT);
 
@@ -34,6 +34,7 @@ void loop()
         Serial.println("SET: " + String(EJEX_POSICION_ENCODER_SETPOINT));
         Serial.println("RESTA: " + String(resta));
         MOVER(DISTANCIA_LETRA);
+        punto();
     }
 
     if (EJEX_POSICION_ENCODER_SETPOINT >= 3650)
