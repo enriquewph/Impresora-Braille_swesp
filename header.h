@@ -40,5 +40,9 @@
 #define MOTOR_STEPS 32
 #define RPM 500
 #define MICROSTEPS 1
-#define DIR 8
-#define STEP 13
+#define DIR 14
+#define STEP 25
+#define PASOS_POR_MM 9
+
+#define NUMERO_POSICIONES_Y 6
+#define NUMERO_POSICIONES_X 4

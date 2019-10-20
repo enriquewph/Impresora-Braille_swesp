@@ -7,7 +7,7 @@ uint16_t resta;
 
 ESP32Encoder encoder;
 
-void MOVER(int a)
+void MOVER_X(int a)
 {
     EJEX_POSICION_ENCODER_SETPOINT=EJEX_POSICION_ENCODER_SETPOINT+a;
         
@@ -16,8 +16,7 @@ void MOVIMIENTO_EJEX()
 {
     EJEX_POSICION_ENCODER_ACTUAL = encoder.getCount();
     resta = EJEX_POSICION_ENCODER_SETPOINT - EJEX_POSICION_ENCODER_ACTUAL;
-    //Serial.println("RESTA: " + String(resta));
-
+    
     int b = 0;
     if (resta < DISTANCIA_5)
         b = 5;
