@@ -15,9 +15,7 @@ void setup()
     encoder.attachHalfQuad(ENCODER_A, ENCODER_B);
     // Serial
     Serial.begin(115200);
-    EJEX_POSICION_ENCODER_SETPOINT = 450;
     EJEX_PONERACERO();
-    
 
     // Motor
     ledcAttachPin(MOTOR_A, MOTOR_A_PWM);
@@ -32,6 +30,7 @@ void setup()
     //funciones varias
   
     lastMillis = millis();
+    
 }
 
 void loop()
@@ -41,23 +40,18 @@ void loop()
     if (millis() >= lastMillis + 500U)
     {
         lastMillis = millis();
-        Serial.println("ACT: " + String(EJEX_POSICION_ENCODER_ACTUAL));
-        Serial.println("SET: " + String(EJEX_POSICION_ENCODER_SETPOINT));
-        Serial.println("RESTA: " + String(resta));
+        //Serial.println("ACT: " + String(EJEX_POSICION_ENCODER_ACTUAL));
+        //Serial.println("SET: " + String(EJEX_POSICION_ENCODER_SETPOINT));
+        //Serial.println("RESTA: " + String(resta));
 
     }
-
-    if (EJEX_POSICION_ENCODER_SETPOINT >= 3650)
-        EJEX_POSICION_ENCODER_SETPOINT = 450;
-    if (EJEX_POSICION_ENCODER_SETPOINT <= 450)
-        EJEX_POSICION_ENCODER_SETPOINT = 450;
-
+    
     if (Serial.available())
     {
         String input = Serial.readStringUntil('\n');
-        
+        escritura();  
     }
-    escritura();
+    
     //MOVIMIENTO_EJEY();
-    MOVIMIENTO_EJEX();
+    
 }

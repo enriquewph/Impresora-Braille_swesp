@@ -1,153 +1,214 @@
-int matriz[NUMERO_POSICIONES_Y][NUMERO_POSICIONES_X] = {{1, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}, {0, 0, 1, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}};
-
+int matriz[NUMERO_POSICIONES_Y][NUMERO_POSICIONES_X] = {{0, 0, 0, 0}, {1, 1, 1, 1}, {1, 1, 1, 1}, {1, 0, 1, 0}, {0, 1, 0, 1}, {1, 0, 1, 0}};
 int escritura()
 {
 
-  int a = 0;
-  int b = 0;
-  int c = 0;
-  int d = 0;
-  int f = 0;
-  int g = 0; 
+    int a = 0;
+    int b = 0;
+    int c = 0;
+    int d = 0;
+    int f = 0;
+    int g = 0;
+    int n = 0;
 
-  for (int i1 = 0; i1 < NUMERO_POSICIONES_Y; i1++)
-  {
-    d++;
-    g++;
-
-    for (int i = 0; i < NUMERO_POSICIONES_X; i++)
+    for (int i1 = 0; i1 < NUMERO_POSICIONES_Y; i1++)
     {
-      if (matriz[i1][i] == 0)
-      {
-        b++;
-        if (b == 4)
-        {
-          f = 0;
-        }
-        else
-        {
-          f = 1;
-        }
-      }
-    }
-    b = 0;
-
-    switch (f)
-    {
-      case 0:
-        Serial.println("         RENGLON SIN NADA");
+        d++;
         g++;
-        c++;
-        break;
-      case 1:
 
-        if (g % 2 == 0) //SI ES PAR VA PARA LA DERECHA
+        for (int i = 0; i < NUMERO_POSICIONES_X; i++)
         {
-          Serial.println("direcion:DERECHA");
-          //SE SETEA LA DIRECION DE LA IMPRESION
-          Serial.println("margen");
-          MOVER_X(DISTANCIA_MARGEN_IZQ);
-          //DISTANCIA DE MARGEN DE LA HOJA
-
-          for (int i = 0; i < NUMERO_POSICIONES_X; i++)
-          {
-            if (matriz[c][i] == 1)
+            if (matriz[i1][i] == 1)
             {
-              Serial.println("punto");
-              punto();
-              //SE ACTIVA EL SOLENOIDE
-              a++;
+                n = 1;
+            }
+            if (matriz[i1][i] == 0)
+            {
+                b++;
+            }
+            if (b == 4 && n == 0)
+            {
+                f = 0;
             }
             else
             {
-              Serial.println("espacio");
-              //NO ACTIVAR
-              a++;
+                f = 1;
             }
-            if (a == 1)
-            {
-              Serial.println("movimiento 2.54");
-              MOVER_X(DISTANCIA_LETRA);
-              //SE MUEVE 2.54 mm EN EL EJE X
-            }
-            if (a == 2)
-            {
-              Serial.println("movimineto 3.75");
-              MOVER_X(DISTANCIA_LyL);
-              //SE MUEVE 3.75 mm EN EL EJE X
-              a = 0;
-            }
-            if (i == NUMERO_POSICIONES_X - 1)
-            {
-              Serial.println("margen");
-              MOVER_X(DISTANCIA_MARGEN_DER);
-              Serial.println("linea terminada");
-              //DISTANCIA DE MARGEN DE LA HOJA
-              //EN ESTE PUNTO SE TERMINO DE IMPRIMIR LA LINEA
-            }
-          }
-          c++;
         }
-        else //SI ES IMPAR VA PARA LA IZQUIERDA
+        b = 0;
+
+        switch (f)
         {
-          Serial.println("direcion:IZQUIERDA");
-          //SE SETEA LA DIRECION DE LA IMPRESION
-          Serial.println("margen");
-          MOVER_X(DISTANCIA_MARGEN_IZQ);
-          //DISTANCIA DE MARGEN DE LA HOJA
-          for (int i = 0; i < NUMERO_POSICIONES_X; i++)
-          {
-            if (matriz[c][i] == 1)
+        case 0:
+            Serial.println("         RENGLON SIN NADA");
+            Serial.println(n);
+            g++;
+            c++;
+            break;
+        case 1:
+
+            if (g % 2 == 0) //SI ES PAR VA PARA LA DERECHA
             {
-              Serial.println("punto");
-              punto();
-              //SE ACTIVA EL SOLENOIDE
-              a++;
+                Serial.println("direcion:DERECHA");
+                //SE SETEA LA DIRECION DE LA IMPRESION
+
+                EJEX_POSICION_ENCODER_SETPOINT = DISTANCIA_MARGEN_DER;
+                POSICION_ESTABLECIDA = 0;
+                while (POSICION_ESTABLECIDA == 0)
+                {
+                    MOVIMIENTO_EJEX();
+                }
+                Serial.println("margen");
+                Serial.println("SET: " + String(EJEX_POSICION_ENCODER_SETPOINT));
+                Serial.println("ACT: " + String(EJEX_POSICION_ENCODER_ACTUAL));
+                //DISTANCIA DE MARGEN DE LA HOJA
+
+                for (int i = 0; i < NUMERO_POSICIONES_X; i++)
+                {
+                    Serial.println("SETfor: " + String(EJEX_POSICION_ENCODER_SETPOINT));
+                    Serial.println("ACTfor: " + String(EJEX_POSICION_ENCODER_ACTUAL));
+                    if (matriz[c][i] == 1)
+                    {
+                        Serial.println("punto");
+                        punto();
+                        //SE ACTIVA EL SOLENOIDE
+                        a++;
+                        delay(5000);
+                    }
+                    else
+                    {
+                        Serial.println("espacio");
+                        //NO ACTIVAR
+                        a++;
+                        delay(5000);
+                    }
+                    if (a == 1)
+                    {
+                        MOVER(DISTANCIA_LETRA);
+                        Serial.println("movimiento 2.54");
+                        Serial.println("SET: " + String(EJEX_POSICION_ENCODER_SETPOINT));
+                        //SE MUEVE 2.54 mm EN EL EJE X
+                    }
+                    POSICION_ESTABLECIDA = 0;
+                    while (POSICION_ESTABLECIDA == 0)
+                    {
+                        MOVIMIENTO_EJEX();
+                    }
+                    delay(5000);
+                    Serial.println("ACT: " + String(EJEX_POSICION_ENCODER_ACTUAL));
+                    if (a == 2)
+                    {
+                        MOVER(DISTANCIA_LyL);
+                        Serial.println("movimineto 3.75");
+                        Serial.println("SET: " + String(EJEX_POSICION_ENCODER_SETPOINT));
+                        //SE MUEVE 3.75 mm EN EL EJE X
+                        a = 0;
+                    }
+                    POSICION_ESTABLECIDA = 0;
+                    while (POSICION_ESTABLECIDA == 0)
+                    {
+                        MOVIMIENTO_EJEX();
+                    }
+                    delay(5000);
+                    Serial.println("ACT: " + String(EJEX_POSICION_ENCODER_ACTUAL));
+                    if (i == NUMERO_POSICIONES_X - 1)
+                    {
+                        Serial.println("margen");
+                        Serial.println("linea terminada");
+                        //DISTANCIA DE MARGEN DE LA HOJA
+                        //EN ESTE PUNTO SE TERMINO DE IMPRIMIR LA LINEA
+                    }
+                }
+                c++;
             }
-            else
+            else //SI ES IMPAR VA PARA LA IZQUIERDA
             {
-              Serial.println("espacio");
-              //NO ACTIVAR
-              a++;
-            }
-            if (a == 1)
-            {
-              Serial.println("movimiento 2.54");
-              MOVER_X(DISTANCIA_LETRA);
-              //SE MUEVE 2.54 mm EN EL EJE X
-            }
-            if (a == 2)
-            {
-              Serial.println("movimineto 3.75");
-              MOVER_X(DISTANCIA_LyL);
-              //SE MUEVE 3.75 mm EN EL EJE X
-              a = 0;
-            }
-            if (i == NUMERO_POSICIONES_X - 1)
-            {
-              Serial.println("margen");
-              MOVER_X(DISTANCIA_MARGEN_DER);
-              Serial.println("linea terminada");
-              //DISTANCIA DE MARGEN DE LA HOJA
-              //EN ESTE PUNTO SE TERMINO DE IMPRIMIR LA LINEA
+                Serial.println("direcion:IZQUIERDA");
+                //SE SETEA LA DIRECION DE LA IMPRESION
+
+                EJEX_POSICION_ENCODER_SETPOINT = DISTANCIA_MARGEN_IZQ;
+                POSICION_ESTABLECIDA = 0;
+                while (POSICION_ESTABLECIDA == 0)
+                {
+                    MOVIMIENTO_EJEX();
+                }
+                Serial.println("margen");
+                Serial.println("SET: " + String(EJEX_POSICION_ENCODER_SETPOINT));
+                Serial.println("ACT: " + String(EJEX_POSICION_ENCODER_ACTUAL));
+                //DISTANCIA DE MARGEN DE LA HOJA
+
+                for (int i = 0; i < NUMERO_POSICIONES_X; i++)
+                {
+                    Serial.println("SETfor: " + String(EJEX_POSICION_ENCODER_SETPOINT));
+                    Serial.println("ACTfor: " + String(EJEX_POSICION_ENCODER_ACTUAL));
+                    if (matriz[c][i] == 1)
+                    {
+                        Serial.println("punto");
+                        punto();
+                        //SE ACTIVA EL SOLENOIDE
+                        a++;
+                        delay(5000);
+                    }
+                    else
+                    {
+                        Serial.println("espacio");
+                        //NO ACTIVAR
+                        a++;
+                        delay(5000);
+                    }
+                    Serial.println("SETpunto: " + String(EJEX_POSICION_ENCODER_SETPOINT));
+                    Serial.println("ACTpunto: " + String(EJEX_POSICION_ENCODER_ACTUAL));
+                    if (a == 1)
+                    {
+
+                        MOVER(DISTANCIA_LETRA * -1);
+                        Serial.println("movimiento 2.54");
+                        Serial.println("SET: " + String(EJEX_POSICION_ENCODER_SETPOINT));
+                        //SE MUEVE 2.54 mm EN EL EJE X
+                    }
+                    POSICION_ESTABLECIDA = 0;
+                    while (POSICION_ESTABLECIDA == 0)
+                    {
+                        MOVIMIENTO_EJEX();
+                    }
+                    delay(5000);
+                    Serial.println("ACT: " + String(EJEX_POSICION_ENCODER_ACTUAL));
+                    if (a == 2)
+                    {
+                        MOVER(DISTANCIA_LyL * -1);
+                        Serial.println("movimineto 3.75");
+                        Serial.println("SET: " + String(EJEX_POSICION_ENCODER_SETPOINT));
+                        //SE MUEVE 3.75 mm EN EL EJE X
+                        a = 0;
+                    }
+                    POSICION_ESTABLECIDA = 0;
+                    while (POSICION_ESTABLECIDA == 0)
+                    {
+                        MOVIMIENTO_EJEX();
+                    }
+                    delay(5000);
+                    Serial.println("ACT: " + String(EJEX_POSICION_ENCODER_ACTUAL));
+                    if (i == NUMERO_POSICIONES_X - 1)
+                    {
+                        Serial.println("margen");
+                        Serial.println("linea terminada");
+                        //DISTANCIA DE MARGEN DE LA HOJA
+                        //EN ESTE PUNTO SE TERMINO DE IMPRIMIR LA LINEA
+                    }
+                }
+                c++;
             }
 
-          }
-          c++;
+            if (d == 3)
+            {
+                Serial.println("RENGLON FINALIZADO");
+                //ACÁ IRIA EL MOVIMIETO DEL MOTOR PASO A PASO CON EL ESPACIADO QUE HAY ENTRE RENGLONES
+                d = 0;
+            }
+            break;
         }
-
-        if (d == 3)
-        {
-          Serial.println("RENGLON FINALIZADO");
-          //ACÁ IRIA EL MOVIMIETO DEL MOTOR PASO A PASO CON EL ESPACIADO QUE HAY ENTRE RENGLONES
-          d = 0;
-        }
-        break;
     }
 
-  }
-
-  Serial.println("IMPRECION FINALIZADA");
-  //EN ESTE PUNTO TERMINO LA IMPRESION DE TODA LA HOJA
-
+    MOVIMIENTO_EJEX();
+    Serial.println("IMPRECION FINALIZADA");
+    //EN ESTE PUNTO TERMINO LA IMPRESION DE TODA LA HOJA
 }

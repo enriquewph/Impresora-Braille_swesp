@@ -3,33 +3,51 @@
 
 double EJEX_POSICION_ENCODER_SETPOINT = 0;
 double EJEX_POSICION_ENCODER_ACTUAL;
+int POSICION_ESTABLECIDA = 0;
 uint16_t resta;
 
 ESP32Encoder encoder;
 
-void MOVER_X(int a)
+void MOVER(int suma)
 {
-    EJEX_POSICION_ENCODER_SETPOINT=EJEX_POSICION_ENCODER_SETPOINT+a;
-        
+    EJEX_POSICION_ENCODER_SETPOINT = EJEX_POSICION_ENCODER_SETPOINT + suma;
 }
 void MOVIMIENTO_EJEX()
 {
     EJEX_POSICION_ENCODER_ACTUAL = encoder.getCount();
     resta = EJEX_POSICION_ENCODER_SETPOINT - EJEX_POSICION_ENCODER_ACTUAL;
-    
+
     int b = 0;
     if (resta < DISTANCIA_5)
+    {
         b = 5;
+        POSICION_ESTABLECIDA = 0;
+    }
     else
+    {
         b = 6;
+        POSICION_ESTABLECIDA = 0;
+    }
     if (resta < DISTANCIA_4)
+    {
         b = 4;
+        POSICION_ESTABLECIDA = 0;
+    }
     if (resta < DISTANCIA_3)
+    {
         b = 3;
+        POSICION_ESTABLECIDA = 0;
+    }
     if (resta < DISTANCIA_2)
+    {
         b = 2;
+        POSICION_ESTABLECIDA = 0;
+    }
     if (resta <= DISTANCIA_ERROR)
+    {
         b = 1;
+        POSICION_ESTABLECIDA = 1;
+    }
 
     if (EJEX_POSICION_ENCODER_ACTUAL < EJEX_POSICION_ENCODER_SETPOINT)
     {
