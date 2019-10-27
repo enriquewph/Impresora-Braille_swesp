@@ -1,7 +1,7 @@
 int punto()
 {
     digitalWrite(SOLENOIDE,1);
-    delay(50);
+    delay(25);
     digitalWrite(SOLENOIDE,0);
     return(1);
 }

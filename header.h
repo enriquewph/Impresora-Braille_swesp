@@ -19,10 +19,10 @@
 #define DISTANCIA_3 50
 #define DISTANCIA_4 100
 #define DISTANCIA_5 150
-#define MOTOR_PWM_1 165
-#define MOTOR_PWM_2 180
-#define MOTOR_PWM_3 195
-#define MOTOR_PWM_4 225
+#define MOTOR_PWM_1 150
+#define MOTOR_PWM_2 165
+#define MOTOR_PWM_3 175
+#define MOTOR_PWM_4 185
 
 #define MARGEN_IZQ 1
 #define MARGEN_DER 2

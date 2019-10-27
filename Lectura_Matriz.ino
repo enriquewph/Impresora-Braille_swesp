@@ -52,11 +52,7 @@ int escritura()
                 //SE SETEA LA DIRECION DE LA IMPRESION
 
                 EJEX_POSICION_ENCODER_SETPOINT = DISTANCIA_MARGEN_DER;
-                POSICION_ESTABLECIDA = 0;
-                while (POSICION_ESTABLECIDA == 0)
-                {
-                    MOVIMIENTO_EJEX();
-                }
+                MOVIMIENTO_EJEX();
                 Serial.println("margen");
                 Serial.println("SET: " + String(EJEX_POSICION_ENCODER_SETPOINT));
                 Serial.println("ACT: " + String(EJEX_POSICION_ENCODER_ACTUAL));
@@ -72,43 +68,35 @@ int escritura()
                         punto();
                         //SE ACTIVA EL SOLENOIDE
                         a++;
-                        delay(5000);
+                        delay(250);
                     }
                     else
                     {
                         Serial.println("espacio");
                         //NO ACTIVAR
                         a++;
-                        delay(5000);
+                        delay(250);
                     }
                     if (a == 1)
                     {
                         MOVER(DISTANCIA_LETRA);
+                        MOVIMIENTO_EJEX();
                         Serial.println("movimiento 2.54");
                         Serial.println("SET: " + String(EJEX_POSICION_ENCODER_SETPOINT));
                         //SE MUEVE 2.54 mm EN EL EJE X
                     }
-                    POSICION_ESTABLECIDA = 0;
-                    while (POSICION_ESTABLECIDA == 0)
-                    {
-                        MOVIMIENTO_EJEX();
-                    }
-                    delay(5000);
+
                     Serial.println("ACT: " + String(EJEX_POSICION_ENCODER_ACTUAL));
                     if (a == 2)
                     {
                         MOVER(DISTANCIA_LyL);
+                        MOVIMIENTO_EJEX();
                         Serial.println("movimineto 3.75");
                         Serial.println("SET: " + String(EJEX_POSICION_ENCODER_SETPOINT));
                         //SE MUEVE 3.75 mm EN EL EJE X
                         a = 0;
                     }
-                    POSICION_ESTABLECIDA = 0;
-                    while (POSICION_ESTABLECIDA == 0)
-                    {
-                        MOVIMIENTO_EJEX();
-                    }
-                    delay(5000);
+
                     Serial.println("ACT: " + String(EJEX_POSICION_ENCODER_ACTUAL));
                     if (i == NUMERO_POSICIONES_X - 1)
                     {
@@ -126,11 +114,7 @@ int escritura()
                 //SE SETEA LA DIRECION DE LA IMPRESION
 
                 EJEX_POSICION_ENCODER_SETPOINT = DISTANCIA_MARGEN_IZQ;
-                POSICION_ESTABLECIDA = 0;
-                while (POSICION_ESTABLECIDA == 0)
-                {
-                    MOVIMIENTO_EJEX();
-                }
+                MOVIMIENTO_EJEX();
                 Serial.println("margen");
                 Serial.println("SET: " + String(EJEX_POSICION_ENCODER_SETPOINT));
                 Serial.println("ACT: " + String(EJEX_POSICION_ENCODER_ACTUAL));
@@ -146,14 +130,14 @@ int escritura()
                         punto();
                         //SE ACTIVA EL SOLENOIDE
                         a++;
-                        delay(5000);
+                        delay(250);
                     }
                     else
                     {
                         Serial.println("espacio");
                         //NO ACTIVAR
                         a++;
-                        delay(5000);
+                        delay(250);
                     }
                     Serial.println("SETpunto: " + String(EJEX_POSICION_ENCODER_SETPOINT));
                     Serial.println("ACTpunto: " + String(EJEX_POSICION_ENCODER_ACTUAL));
@@ -161,31 +145,23 @@ int escritura()
                     {
 
                         MOVER(DISTANCIA_LETRA * -1);
+                        MOVIMIENTO_EJEX();
                         Serial.println("movimiento 2.54");
                         Serial.println("SET: " + String(EJEX_POSICION_ENCODER_SETPOINT));
                         //SE MUEVE 2.54 mm EN EL EJE X
                     }
-                    POSICION_ESTABLECIDA = 0;
-                    while (POSICION_ESTABLECIDA == 0)
-                    {
-                        MOVIMIENTO_EJEX();
-                    }
-                    delay(5000);
+
                     Serial.println("ACT: " + String(EJEX_POSICION_ENCODER_ACTUAL));
                     if (a == 2)
                     {
                         MOVER(DISTANCIA_LyL * -1);
+                        MOVIMIENTO_EJEX();
                         Serial.println("movimineto 3.75");
                         Serial.println("SET: " + String(EJEX_POSICION_ENCODER_SETPOINT));
                         //SE MUEVE 3.75 mm EN EL EJE X
                         a = 0;
                     }
-                    POSICION_ESTABLECIDA = 0;
-                    while (POSICION_ESTABLECIDA == 0)
-                    {
-                        MOVIMIENTO_EJEX();
-                    }
-                    delay(5000);
+
                     Serial.println("ACT: " + String(EJEX_POSICION_ENCODER_ACTUAL));
                     if (i == NUMERO_POSICIONES_X - 1)
                     {
@@ -193,6 +169,8 @@ int escritura()
                         Serial.println("linea terminada");
                         //DISTANCIA DE MARGEN DE LA HOJA
                         //EN ESTE PUNTO SE TERMINO DE IMPRIMIR LA LINEA
+
+                    
                     }
                 }
                 c++;
@@ -207,7 +185,7 @@ int escritura()
             break;
         }
     }
-
+       EJEX_POSICION_ENCODER_SETPOINT=10;
     MOVIMIENTO_EJEX();
     Serial.println("IMPRECION FINALIZADA");
     //EN ESTE PUNTO TERMINO LA IMPRESION DE TODA LA HOJA
