@@ -2,13 +2,13 @@
 #include "header.h"
 
 double EJEX_POSICION_ENCODER_SETPOINT = 0;
-double EJEX_POSICION_ENCODER_ACTUAL;
+float EJEX_POSICION_ENCODER_ACTUAL;
 int POSICION_ESTABLECIDA = 0;
 uint16_t resta;
 
 ESP32Encoder encoder;
 
-void MOVER(int suma)
+void MOVER(float suma)
 {
     EJEX_POSICION_ENCODER_SETPOINT = EJEX_POSICION_ENCODER_SETPOINT + suma;
 }

@@ -24,18 +24,16 @@ void setup()
     ledcSetup(MOTOR_B_PWM, MOTOR_PWM_FREQ, MOTOR_PWM_RESOLUCION);
 
     //steper
-  
+
     stepper.begin(RPM, MICROSTEPS);
-    
+
     //funciones varias
-  
+
     lastMillis = millis();
-    
 }
 
 void loop()
 {
-    
 
     if (millis() >= lastMillis + 500U)
     {
@@ -43,15 +41,39 @@ void loop()
         //Serial.println("ACT: " + String(EJEX_POSICION_ENCODER_ACTUAL));
         //Serial.println("SET: " + String(EJEX_POSICION_ENCODER_SETPOINT));
         //Serial.println("RESTA: " + String(resta));
-
     }
-    
+
     if (Serial.available())
     {
         String input = Serial.readStringUntil('\n');
-        escritura();  
+        int a = input.toInt();
+        if (a == 1)
+            escritura();
+        if (a == 2)
+        {
+            MOVIMIENTO_EJEY(ENTRAR_HOJA);
+            delay(1000);
+            MOVIMIENTO_EJEY(MARGEN_TOP_DOWN);
+            delay(1000);
+        }
+        if (a == 3)
+            MOVIMIENTO_EJEY(SACAR_HOJA);
+        if (a == 4)
+        {
+            MOVER(701.75);
+            MOVIMIENTO_EJEX();
+        }
+        if (a == 5)
+        {
+            EJEX_POSICION_ENCODER_SETPOINT = DISTANCIA_MARGEN_DER;
+            MOVIMIENTO_EJEX();
+        }
+        if (a == 6)
+        {
+            MOVER(701.75);
+            MOVIMIENTO_EJEX();
+        }
     }
-    
+
     //MOVIMIENTO_EJEY();
-    
 }
