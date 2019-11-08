@@ -2,8 +2,6 @@
 #include "header.h"
 #include "BasicStepperDriver.h"
 
-uint32_t lastMillis;
-
 void setup()
 {
     //Pines out
@@ -29,50 +27,23 @@ void setup()
 
     //funciones varias
 
-    lastMillis = millis();
+
 }
 
 void loop()
 {
 
-    if (millis() >= lastMillis + 500U)
-    {
-        lastMillis = millis();
-        //Serial.println("ACT: " + String(EJEX_POSICION_ENCODER_ACTUAL));
-        //Serial.println("SET: " + String(EJEX_POSICION_ENCODER_SETPOINT));
-        //Serial.println("RESTA: " + String(resta));
-    }
+ 
 
     if (Serial.available())
     {
         String input = Serial.readStringUntil('\n');
-        int a = input.toInt();
-        if (a == 1)
-            escritura();
-        if (a == 2)
-        {
-            MOVIMIENTO_EJEY(ENTRAR_HOJA);
-            delay(1000);
-            MOVIMIENTO_EJEY(MARGEN_TOP_DOWN);
-            delay(1000);
-        }
-        if (a == 3)
-            MOVIMIENTO_EJEY(SACAR_HOJA);
-        if (a == 4)
-        {
-            MOVER(701.75);
-            MOVIMIENTO_EJEX();
-        }
-        if (a == 5)
-        {
-            EJEX_POSICION_ENCODER_SETPOINT = DISTANCIA_MARGEN_DER;
-            MOVIMIENTO_EJEX();
-        }
-        if (a == 6)
-        {
-            MOVER(701.75);
-            MOVIMIENTO_EJEX();
-        }
+        int a=input.toInt();
+        if(a==1)
+        escritura();
+        if(a==2)
+        MOVIMIENTO_EJEY(SACAR_HOJA);
+
     }
 
     //MOVIMIENTO_EJEY();

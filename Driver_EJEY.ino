@@ -1,12 +1,14 @@
 #include "BasicStepperDriver.h"
+uint32_t lastMillis;
 
 BasicStepperDriver stepper(MOTOR_STEPS, DIR, STEP);
 
-void MOVIMIENTO_EJEY(int a)
+int MOVIMIENTO_EJEY(int a)
 {
     int b = 0;
+    int c = 0;
+    int d = 0;
     b = analogRead(SENSOR_HOJA);
-    Serial.println(b);
 
     if (a == 1)
     {
@@ -14,17 +16,27 @@ void MOVIMIENTO_EJEY(int a)
         delay(100);
         stepper.moverHoja(10, 14.6);
         delay(100);
-        while (b <= 2000)
+        lastMillis = millis();
+        while (b <= 2000 && c == 0)
         {
+            if (millis() >= lastMillis + 4500U)
+            {
+                //lastMillis = millis();
+                Serial.println("NO HAY HOJA");
+                stepper.enable();
+                c = 1;
+                return(1);
+            }
             b = analogRead(SENSOR_HOJA);
-            Serial.println(b);
             stepper.moverHoja(-1, 14.6);
         }
         stepper.moverHoja(-19, 14.6);
+        return(0);
+        
     }
     if (a == 2)
     {
-        stepper.moverHoja(-25, 14.6);
+        stepper.moverHoja(-40, 14.6);
     }
     if (a == 3)
     {
@@ -39,7 +51,6 @@ void MOVIMIENTO_EJEY(int a)
         while (b >= 2000)
         {
             b = analogRead(SENSOR_HOJA);
-            Serial.println(b);
             stepper.moverHoja(-1, 14.6);
         }
         stepper.moverHoja(-80, 14.6);
