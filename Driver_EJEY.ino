@@ -36,7 +36,7 @@ int MOVIMIENTO_EJEY(int a)
     }
     if (a == 2)
     {
-        stepper.moverHoja(-40, 14.6);
+        stepper.moverHoja(-41, 14.6);
     }
     if (a == 3)
     {

@@ -1,137 +1,13 @@
 int matriz[NUMERO_POSICIONES_Y][NUMERO_POSICIONES_X] =
-    {
-        {
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-        },
-        {
-            1,
-            1,
-            1,
-            1,
-            0,
-            0,
-            0,
-            0,
-            1,
-            1,
-            0,
-            0,
-            1,
-            1,
-            0,
-            0,
-            1,
-            1,
-            0,
-            0,
-        },
-        {
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            0,
-            0,
-            1,
-            1,
-            0,
-            0,
-            1,
-            1,
-            0,
-            0,
-            1,
-            1,
-            0,
-            0,
-        },
-        {
-            1,
-            0,
-            1,
-            0,
-            1,
-            1,
-            0,
-            0,
-            1,
-            1,
-            0,
-            0,
-            1,
-            1,
-            0,
-            0,
-            1,
-            1,
-            0,
-            0,
-        },
-        {
-            0,
-            1,
-            0,
-            1,
-            1,
-            0,
-            0,
-            1,
-            1,
-            0,
-            0,
-            1,
-            1,
-            0,
-            0,
-            1,
-            1,
-            0,
-            0,
-            1,
-        },
-        {
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-        }};
+{
+{1,0,0,0,0,0,0,0,1,1,0,0,0,1,1,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+{1,0,0,0,0,0,0,0,0,1,1,0,1,1,1,0,0,0,1,1,0,1,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+{1,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+{1,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+{1,0,0,0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+{1,0,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,1,1,0,1,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+{1,0,0,0,0,0,0,1,1,0,0,0,0,0,1,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+};
 void escritura()
 {
 
@@ -163,6 +39,7 @@ void escritura()
                 d++;
                 g++;
 
+
                 for (int i = 0; i < NUMERO_POSICIONES_X; i++)
                 {
 
@@ -190,53 +67,53 @@ void escritura()
                     Serial.println("         RENGLON SIN NADA");
                     g++;
                     c++;
+                    d++;
                     break;
                 case 1:
 
                     if (g % 2 == 0) //SI ES PAR VA PARA LA DERECHA
                     {
                         //SE SETEA LA DIRECION DE LA IMPRESION
-                        Serial.println("direcion:DERECHA");
+                        Serial.println("direcion:IZQUIERDA");
                         //DISTANCIA DE MARGEN DE LA HOJA
-                        EJEX_POSICION_ENCODER_SETPOINT = DISTANCIA_MARGEN_DER;
+                        EJEX_POSICION_ENCODER_SETPOINT = DISTANCIA_MARGEN_IZQ;
+                        MOVER(DISTANCIA_MARGEN* -1);
                         MOVIMIENTO_EJEX();
                         Serial.println("margen");
-                        delay(1000);
 
-                        for (int i = 0; i < NUMERO_POSICIONES_X; i++)
+                        for (int i = NUMERO_POSICIONES_X; i < NUMERO_POSICIONES_X; i--)
                         {
                             if (matriz[c][i] == 1)
                             {
+                                //SE ACTIVA EL SOLENOIDE
                                 Serial.println("punto");
                                 punto();
-                                //SE ACTIVA EL SOLENOIDE
                                 a++;
-                                delay(250);
                             }
                             else
                             {
-                                Serial.println("espacio");
                                 //NO ACTIVAR
+                                Serial.println("espacio");
                                 a++;
-                                delay(250);
                             }
                             if (a == 1)
                             {
-                                MOVER(DISTANCIA_LETRA);
+                                MOVER(DISTANCIA_LETRA * -1);
                                 MOVIMIENTO_EJEX();
-                                Serial.println("movimiento 2.54");
+                                Serial.println("movimiento 2.5");
                                 //SE MUEVE 2.54 mm EN EL EJE X
                             }
                             if (a == 2)
                             {
-                                MOVER(DISTANCIA_LyL);
+                                MOVER(DISTANCIA_LyL * -1);
                                 MOVIMIENTO_EJEX();
-                                Serial.println("movimineto 3.75");
+                                Serial.println("movimineto 3.5");
                                 //SE MUEVE 3.75 mm EN EL EJE X
                                 a = 0;
                             }
                             if (i == NUMERO_POSICIONES_X - 1)
                             {
+                                
                                 MOVIMIENTO_EJEY(ESPA_LINEA);
                                 Serial.println("margen");
                                 Serial.println("linea terminada");
@@ -249,47 +126,46 @@ void escritura()
                     else //SI ES IMPAR VA PARA LA IZQUIERDA
                     {
                         //SE SETEA LA DIRECION DE LA IMPRESION
-                        Serial.println("direcion:IZQUIERDA");
+                        Serial.println("direcion:DERECHA");
                         //DISTANCIA DE MARGEN DE LA HOJA
-                        EJEX_POSICION_ENCODER_SETPOINT = DISTANCIA_MARGEN_IZQ;
+                        EJEX_POSICION_ENCODER_SETPOINT = DISTANCIA_MARGEN_DER;
+                        MOVER(DISTANCIA_MARGEN);
                         MOVIMIENTO_EJEX();
                         Serial.println("margen");
-                        delay(1000);
 
                         for (int i = 0; i < NUMERO_POSICIONES_X; i++)
                         {
                             if (matriz[c][i] == 1)
                             {
-                                //SE ACTIVA EL SOLENOIDE
                                 Serial.println("punto");
                                 punto();
+                                //SE ACTIVA EL SOLENOIDE
                                 a++;
-                                delay(250);
                             }
                             else
                             {
-                                //NO ACTIVAR
                                 Serial.println("espacio");
+                                //NO ACTIVAR
                                 a++;
-                                delay(250);
                             }
                             if (a == 1)
                             {
-                                MOVER(DISTANCIA_LETRA * -1);
+                                MOVER(DISTANCIA_LETRA);
                                 MOVIMIENTO_EJEX();
-                                Serial.println("movimiento 2.54");
+                                Serial.println("movimiento 2.5");
                                 //SE MUEVE 2.54 mm EN EL EJE X
                             }
                             if (a == 2)
                             {
-                                MOVER(DISTANCIA_LyL * -1);
+                                MOVER(DISTANCIA_LyL);
                                 MOVIMIENTO_EJEX();
-                                Serial.println("movimineto 3.75");
+                                Serial.println("movimineto 3.5");
                                 //SE MUEVE 3.75 mm EN EL EJE X
                                 a = 0;
                             }
                             if (i == NUMERO_POSICIONES_X - 1)
                             {
+                                
                                 MOVIMIENTO_EJEY(ESPA_LINEA);
                                 Serial.println("margen");
                                 Serial.println("linea terminada");
@@ -299,6 +175,8 @@ void escritura()
                         }
                         c++;
                     }
+                        
+                    
                     if (d == 3)
                     {
                         MOVIMIENTO_EJEY(ESPA_RENGLON);

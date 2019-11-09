@@ -22,7 +22,6 @@ void MOVIMIENTO_EJEX()
         EJEX_POSICION_ENCODER_ACTUAL = encoder.getCount();
         resta = EJEX_POSICION_ENCODER_SETPOINT - EJEX_POSICION_ENCODER_ACTUAL;
         int b = 0;
-       
 
         if (resta < DISTANCIA_5)
         {
@@ -80,7 +79,7 @@ void MOVIMIENTO_EJEX()
                 break;
             }
         }
-        if (EJEX_POSICION_ENCODER_ACTUAL > EJEX_POSICION_ENCODER_SETPOINT)
+        else
         {
             switch (b)
             {
@@ -112,6 +111,7 @@ void MOVIMIENTO_EJEX()
         }
     }
 }
+
 
 void EJEX_PONERACERO()
 {

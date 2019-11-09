@@ -26,24 +26,28 @@ void setup()
     stepper.begin(RPM, MICROSTEPS);
 
     //funciones varias
-
-
 }
 
 void loop()
 {
 
- 
-
     if (Serial.available())
     {
         String input = Serial.readStringUntil('\n');
-        int a=input.toInt();
-        if(a==1)
-        escritura();
-        if(a==2)
-        MOVIMIENTO_EJEY(SACAR_HOJA);
-
+        int a = input.toInt();
+        if (a == 1)
+            escritura();
+        if (a == 2)
+        {
+            EJEX_POSICION_ENCODER_SETPOINT = DISTANCIA_MARGEN_IZQ;
+            MOVIMIENTO_EJEX();
+            punto();
+            delay(2000);
+            EJEX_POSICION_ENCODER_SETPOINT = DISTANCIA_MARGEN_DER;
+            MOVIMIENTO_EJEX();
+            punto();
+            delay(2000);
+        }
     }
 
     //MOVIMIENTO_EJEY();
