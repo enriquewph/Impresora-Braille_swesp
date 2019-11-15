@@ -116,6 +116,7 @@ void MOVIMIENTO_EJEX()
 void EJEX_PONERACERO()
 {
     //ir a 0.
+    Serial.println("Poniendo a 0");
     digitalWrite(MOTOR_A, LOW);
     digitalWrite(MOTOR_B, HIGH);
     delay(3500);

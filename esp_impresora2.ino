@@ -8,7 +8,6 @@ void setup()
     pinMode(SOLENOIDE, OUTPUT);
     pinMode(MOTOR_A, OUTPUT);
     pinMode(MOTOR_B, OUTPUT);
-
     // Attache pins for use as encoder pins
     encoder.attachHalfQuad(ENCODER_A, ENCODER_B);
     // Serial
@@ -31,24 +30,38 @@ void setup()
 void loop()
 {
 
+   
+  
     if (Serial.available())
     {
         String input = Serial.readStringUntil('\n');
         int a = input.toInt();
         if (a == 1)
-            escritura();
+            MOVIMIENTO_EJEY(ENTRAR_HOJA);
         if (a == 2)
+            punto();
+        if (a == 3)
         {
-            EJEX_POSICION_ENCODER_SETPOINT = DISTANCIA_MARGEN_IZQ;
-            MOVIMIENTO_EJEX();
-            punto();
-            delay(2000);
             EJEX_POSICION_ENCODER_SETPOINT = DISTANCIA_MARGEN_DER;
+            MOVER(DISTANCIA_MARGEN);
             MOVIMIENTO_EJEX();
-            punto();
-            delay(2000);
         }
+        if (a == 4)
+        {
+            MOVER(DISTANCIA_LETRA);
+            MOVIMIENTO_EJEX();
+        }
+        if (a == 5)
+        {
+            MOVER(DISTANCIA_LyL);
+            MOVIMIENTO_EJEX();
+        }
+        if (a == 6)
+            MOVIMIENTO_EJEY(ESPA_LINEA);
+        if (a == 7)
+            MOVIMIENTO_EJEY(ESPA_RENGLON);
+        if (input == "I")
+            escritura();
     }
 
-    //MOVIMIENTO_EJEY();
 }
