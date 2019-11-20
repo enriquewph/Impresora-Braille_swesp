@@ -35,4 +35,13 @@ uint32_t BCL_LASTMILLIS_TMOUT;           //Marca de tiempo para operaciones de T
 bool bitArray[BCL_SIZE_BITARRAY_X][BCL_SIZE_BITARRAY_Y];
 uint8_t serialRXBuffer[BCL_BUFFER_SIZE]; //Buffer para la recepcion de datos x uart.
 
+
+//Definicion de funciones
+void BCL_SendEvent(uint8_t EVENTO, uint8_t DATO);
+void BrailleComLib_Loop();
+void recibirHoja();
+void BrailleComLib_Init();
+void cargarBitArray();
+uint8_t calcularChecksum(uint8_t *datos);
+
 #endif

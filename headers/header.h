@@ -3,28 +3,40 @@
 #include <Arduino.h>
 #include <stdint.h>
 
-#include <ESP32Encoder.h> //V0.2.1
+#include <ESP32Encoder.h>       //V0.2.1
 #include <BasicStepperDriver.h> //V1.1.4
 
 #include "pines.h"
 #include "comandos_uart.h"
 #include "BrailleCom.h"
+#include "eje_x.h"
+#include "eje_y.h"
+#include "subrutinas_varias.h"
 
-#define MOTOR_A_PWM 1
-#define MOTOR_B_PWM 2
 
-#define MOTOR_STEPS 32
+#include "BluetoothSerial.h"
 
-#define PASOS_POR_MILIMETRO 14.6
+#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
+#error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
+#endif
 
-BasicStepperDriver stepper(MOTOR_STEPS, pin_stepper_dir, pin_stepper_step);
+BluetoothSerial SerialBT;
 
-#define ESCALONES_PID 5
-#define PWM_maximo 235
 
-int32_t disVector[ESCALONES_PID] = {2, 25, 50, 100, 150}; //<= activa respectiva salida.
-uint8_t pwmVector[ESCALONES_PID] = {0, 160, 175, 185, 195};
+//Estructura para retorno de eventos de fallo/ok por parte de la rutina de impresion:
 
-int32_t posSet = 0;
+typedef struct eventArgs
+{
+    uint8_t result;
+    uint8_t code;
+} eventArgs_t;
+
+eventArgs_t rutinaImpresion();
+
+String eventMessage[] = 
+{
+    "No hay hoja en la impresora", //codigo 0
+    "Error random 1" //codigo 1
+};
 
 #endif
