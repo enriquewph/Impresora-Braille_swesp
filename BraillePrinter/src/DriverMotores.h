@@ -15,16 +15,20 @@ public:
     void movimiento_eje_x();
     void movimiento_x(float suma);
 
-private:
-    void moverHoja(float milimetros);
-    bool leerADC_DIG(uint8_t pin);
-    uint32_t lastMillis;
-    void setPwmMotor(uint8_t a, uint8_t b);
-
     double EJEX_POSICION_ENCODER_SETPOINT = 0;
     float EJEX_POSICION_ENCODER_ACTUAL;
     int POSICION_ESTABLECIDA = 0;
     uint16_t resta;
+
+private:
+    void moverHoja(float milimetros);
+    bool leerADC_DIG(uint8_t pin);
+    uint32_t lastMillis;
+    void setPwmMotor_dir(uint8_t pwm, uint8_t direccion); //Direccion = 1, mueve izquierda.
+    void setPwmMotor(uint8_t a, uint8_t b);
 };
+
+void solenoide_punto();
+int32_t diferencia(int32_t a, int32_t b);
 
 #endif
