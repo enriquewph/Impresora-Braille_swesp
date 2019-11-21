@@ -3,10 +3,21 @@
 
 #define MOTOR_A_PWM 1
 #define MOTOR_B_PWM 2
+
+#define ESCALONES_PID 6
+#define PWM_maximo 235
+
+int32_t disVector[ESCALONES_PID] = {1, 10, 25, 50, 100, 150}; //<= activa respectiva salida.
+uint8_t pwmVector[ESCALONES_PID] = {0, 155, 160, 175, 185, 195};
+
+/*
 #define ESCALONES_PID 5
 #define PWM_maximo 235
+
 int32_t disVector[ESCALONES_PID] = {2, 25, 50, 100, 150}; //<= activa respectiva salida.
 uint8_t pwmVector[ESCALONES_PID] = {0, 160, 175, 185, 195};
+*/
+
 int32_t EJEX_SETPOINT = 0;
 ESP32Encoder encoder;
 

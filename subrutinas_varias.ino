@@ -52,11 +52,9 @@ void moverHoja(float milimetros)
     stepper.move(pasos);
 }
 
-void debugMovimientos()
+void debugMovimientos(String inputString)
 {
-    if (Serial.available())
-    {
-        switch (Serial.readStringUntil('\n').toInt())
+    switch (inputString.toInt())
         {
         case 1:
             MOVIMIENTO_EJEY(MOV_Y_ENTRAR_HOJA);
@@ -87,5 +85,4 @@ void debugMovimientos()
             MOVIMIENTO_EJEY(MOV_Y_MARGEN_SUPERIOR);
             break;
         }
-    }
 }

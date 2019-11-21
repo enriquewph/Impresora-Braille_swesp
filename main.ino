@@ -16,6 +16,13 @@ void loop()
 {
     BrailleComLib_Loop();
 
+    if (SerialBT.available())
+    {
+        String inputString = SerialBT.readStringUntil('\n');
+        SerialBT.println("OK");
+        debugMovimientos(inputString);
+    }
+
     if (BCLV_IMPRIMIENDO) //Se recibio la instrucción de imprimir una hoja. proceder a imprimir.
     {
         eventArgs_t eventFromResult = rutinaImpresion();
@@ -43,21 +50,17 @@ eventArgs_t rutinaImpresion()
 
     //Ubicar la hoja en X,Y 0,0
     MOVIMIENTO_EJEY(MOV_Y_MARGEN_SUPERIOR);
-    for (int i = 0; i < 27; i++)
+
+    for (uint16_t index_y = 0; index_y < BCL_SIZE_BITARRAY_Y; index_y++)
     {
-        MOVIMIENTO_EJEY(MOV_Y_ESPACIO_LINEA);
+        imprimirLinea(index_y, index_y % 2);
+        informarLineaTerminada(index_y);
+        if ((index_y % 3) != 2)
+            MOVIMIENTO_EJEY(MOV_Y_ESPACIO_LINEA);
+        else
+            MOVIMIENTO_EJEY(MOV_Y_ESPACIO_RENGLON);
+
     }
-
-
-
-    uint16_t index_y = 0;
-
-    imprimirLinea(0, 1);
-    MOVIMIENTO_EJEY(MOV_Y_ESPACIO_LINEA);
-    imprimirLinea(1, 1);
-    MOVIMIENTO_EJEY(MOV_Y_ESPACIO_LINEA);
-    imprimirLinea(2, 1);
-    MOVIMIENTO_EJEY(MOV_Y_ESPACIO_RENGLON);
 
     MOVIMIENTO_EJEY(MOV_Y_SACAR_HOJA);
 
@@ -116,4 +119,9 @@ void imprimirLinea(uint16_t index_y, uint8_t direccion)
         }
     }
     return;
+}
+
+void informarLineaTerminada(uint16_t index_y)
+{
+    BCL_SendEvent(BCLE_EVENTO_LINEA_TERMINADA, index_y);
 }
