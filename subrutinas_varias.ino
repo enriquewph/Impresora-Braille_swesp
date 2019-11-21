@@ -1,5 +1,15 @@
 #include "headers/header.h"
 
+bool segmentoDeLineaNoVacio(int16_t desde, int16_t hasta, uint16_t index_y)
+{
+    for (int16_t index_x = desde; index_x < hasta; index_x++)
+    {
+        if (bitArray[index_x][index_y])
+            return true;
+    }
+    return false;
+}
+
 void SOLENOIDE_PUNTO(bool i)
 {
     if (i)
@@ -42,7 +52,6 @@ void moverHoja(float milimetros)
     stepper.move(pasos);
 }
 
-
 void debugMovimientos()
 {
     if (Serial.available())
@@ -56,7 +65,7 @@ void debugMovimientos()
             SOLENOIDE_PUNTO(1);
             break;
         case 3:
-            EJEX_MOVERSE_A_COORDENADA(DIST_X_MARGEN_DER_DESDE_BORDE);
+            EJEX_MOVERSE_A_COORDENADA(DIST_X_BORDE_IZQUIERDO);
             MOVIMIENTO_EJEX(MOV_X_MARGEN, 1);
             break;
         case 4:
