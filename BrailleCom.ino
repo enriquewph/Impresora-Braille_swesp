@@ -6,7 +6,7 @@ void BCL_SendEvent(uint8_t EVENTO, uint8_t DATO) //Para la mayoria de los evento
     Serial.write(SerialSendBuffer, 3);
 }
 
-void BrailleComLib_Loop()
+uint8_t BrailleComLib_Loop()
 {
     if (BCL_ESTADO == BCL_ESTADO_STANDBY)
     {
@@ -47,7 +47,17 @@ void BrailleComLib_Loop()
             case BCLS_HANDSHAKE:
                 Serial.write(BCLR_CMD_VALIDO);
                 break;
-
+            case BCLS_ESTADO_ACTUAL:
+                Serial.write(BCLV_IMPRIMIENDO);
+                break;
+            case BCLS_ABORTAR:
+                Serial.write(BCLR_CMD_VALIDO);
+                return 1;
+                break;
+            case BCLS_SACAR_HOJA:
+                Serial.write(BCLR_CMD_VALIDO);
+                MOVIMIENTO_EJEY(MOV_Y_SACAR_HOJA);
+                break;
             case BCLS_PREPARAR_IMPRESION:
                 Serial.write(BCLR_CMD_VALIDO);
                 BCL_ESTADO = BCL_ESTADO_RECIBIENDO_HOJA;
@@ -74,6 +84,7 @@ void BrailleComLib_Loop()
         recibirHoja();
         BCL_ESTADO = BCL_ESTADO_STANDBY;
     }
+    return 0;
 }
 
 void recibirHoja()
@@ -159,4 +170,9 @@ uint8_t calcularChecksum(uint8_t *datos)
     checksum = checksum_long % 256;
 
     return checksum;
+}
+
+uint8_t CheckForAbort() //Retorna 1 si se debe abortar la impresion.
+{
+    return BrailleComLib_Loop();
 }

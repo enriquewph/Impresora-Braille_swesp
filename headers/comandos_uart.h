@@ -6,6 +6,9 @@
 #define BCLS_PREPARAR_IMPRESION 0xF1 //Se debe mandar al final de toda configuracion, justo antes de recibir datos de hoja.
 #define BCLS_HOJA_NUMERO 0xF2
 #define BCLS_HOJA_ACTUAL 0xF3
+#define BCLS_ABORTAR 0xF4
+#define BCLS_SACAR_HOJA 0xF5
+#define BCLS_ESTADO_ACTUAL 0xF6
 
 //Respuestas a enviar.
 #define BCLR_CMD_VALIDO 0xF4      //Se envia si el comando recibido en STANDBY es VALIDO...

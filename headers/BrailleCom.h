@@ -38,10 +38,11 @@ uint8_t serialRXBuffer[BCL_BUFFER_SIZE]; //Buffer para la recepcion de datos x u
 
 //Definicion de funciones
 void BCL_SendEvent(uint8_t EVENTO, uint8_t DATO);
-void BrailleComLib_Loop();
+uint8_t BrailleComLib_Loop();
 void recibirHoja();
 void BrailleComLib_Init();
 void cargarBitArray();
 uint8_t calcularChecksum(uint8_t *datos);
+uint8_t CheckForAbort(); //Retorna 1 si se debe abortar la impresion.
 
 #endif

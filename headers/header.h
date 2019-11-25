@@ -22,7 +22,6 @@
 
 BluetoothSerial SerialBT;
 
-
 //Estructura para retorno de eventos de fallo/ok por parte de la rutina de impresion:
 
 typedef struct eventArgs

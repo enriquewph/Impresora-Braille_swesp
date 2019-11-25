@@ -26,7 +26,7 @@ void loop()
     if (BCLV_IMPRIMIENDO) //Se recibio la instrucción de imprimir una hoja. proceder a imprimir.
     {
         eventArgs_t eventFromResult = rutinaImpresion();
-
+        
         BCL_SendEvent(eventFromResult.result, eventFromResult.code);
 
         BCLV_IMPRIMIENDO = 0;
@@ -36,6 +36,9 @@ void loop()
 eventArgs_t rutinaImpresion()
 {
     eventArgs_t retArgs;
+    eventArgs_t retArgs_Abort;
+    retArgs_Abort.result = BCLE_EVENTO_IMPRESION_FAIL;
+    retArgs_Abort.code = 1;
 
     SerialBT.println("Comenzando Impresion");
     ejex_poner_a_cero(); //Correr el carrete asi no interfiere con el mecanismo de carga de hoja.
@@ -47,21 +50,24 @@ eventArgs_t rutinaImpresion()
         retArgs.code = 0;
         return retArgs;
     }
+    if (CheckForAbort()) return retArgs_Abort;
 
     //Ubicar la hoja en X,Y 0,0
     MOVIMIENTO_EJEY(MOV_Y_MARGEN_SUPERIOR);
 
     for (uint16_t index_y = 0; index_y < BCL_SIZE_BITARRAY_Y; index_y++)
     {
-        imprimirLinea(index_y, index_y % 2);
+        imprimirLinea(index_y, !(index_y % 2));
         informarLineaTerminada(index_y);
+
+        if (CheckForAbort()) return retArgs_Abort;
+
         if ((index_y % 3) != 2)
             MOVIMIENTO_EJEY(MOV_Y_ESPACIO_LINEA);
         else
             MOVIMIENTO_EJEY(MOV_Y_ESPACIO_RENGLON);
-
     }
-
+    if (CheckForAbort()) return retArgs_Abort;
     MOVIMIENTO_EJEY(MOV_Y_SACAR_HOJA);
 
     retArgs.result = BCLE_EVENTO_IMPRESION_OK;
@@ -87,7 +93,7 @@ void imprimirLinea(uint16_t index_y, uint8_t direccion)
                 MOVIMIENTO_EJEX(MOV_X_ESPACIO_ENTRE_LETRAS, 1);
             else
                 MOVIMIENTO_EJEX(MOV_X_ESPACIO_ENTRE_PUNTOS, 1);
-            
+
             if (!segmentoDeLineaNoVacio(index_x + 1, BCL_SIZE_BITARRAY_X, index_y))
             {
                 SerialBT.println(F("No hay mas puntos en lo que resta de esta linea."));
@@ -106,11 +112,11 @@ void imprimirLinea(uint16_t index_y, uint8_t direccion)
 
             SOLENOIDE_PUNTO(bitArray[newIndex_x][index_y]);
 
-            if (newIndex_x % 2)                                    //Debe ir un espacio entre letras
+            if (newIndex_x % 2)                                 //Debe ir un espacio entre letras
                 MOVIMIENTO_EJEX(MOV_X_ESPACIO_ENTRE_PUNTOS, 0); //la expresion esta al reves..
             else
                 MOVIMIENTO_EJEX(MOV_X_ESPACIO_ENTRE_LETRAS, 0);
-            
+
             if (!segmentoDeLineaNoVacio(0, index_x - 1, index_y)) //probar.
             {
                 SerialBT.println(F("No hay mas puntos en lo que resta de esta linea."));
